@@ -17,13 +17,10 @@ async function getInitialData(): Promise<{
   superAgent: string | undefined;
   categories: Category[];
 }> {
-  const base = process.env.NEXT_PUBLIC_BASE_URL && process.env.NEXT_PUBLIC_BASE_URL.trim().length > 0
-    ? process.env.NEXT_PUBLIC_BASE_URL
-    : 'http://localhost:3000';
   const [dictRes, botsRes, toolsRes] = await Promise.all([
-    fetch(`${base}/api/gateway/dict-types`, { next: { revalidate: 300, tags: ['gateway-dict'] } }),
-    fetch(`${base}/api/gateway/bots`, { next: { revalidate: 300, tags: ['gateway-bots'] } }),
-    fetch(`${base}/api/gateway/tools`, { next: { revalidate: 300, tags: ['gateway-tools'] } }),
+    fetch(`/api/gateway/dict-types`, { next: { revalidate: 300, tags: ['gateway-dict'] } }),
+    fetch(`/api/gateway/bots`, { next: { revalidate: 300, tags: ['gateway-bots'] } }),
+    fetch(`/api/gateway/tools`, { next: { revalidate: 300, tags: ['gateway-tools'] } }),
   ]);
 
   const dict = dictRes.ok ? await dictRes.json() as { agent_catalog: { id: number; name: string; remark?: string }[]; super_agent: { value: string }[] } : { agent_catalog: [], super_agent: [] };
