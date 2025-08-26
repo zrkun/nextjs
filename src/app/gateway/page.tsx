@@ -1,3 +1,5 @@
+
+
 import NextImage from 'next/image';
 import { Flex } from 'antd';
 import HeaderUser from './components/HeaderUser';
@@ -5,29 +7,36 @@ import SearchEntry from './components/SearchEntry';
 import BotCardItem from './components/BotCardItem';
 import ToolCardItem from './components/ToolCardItem';
 import styles from './index.module.scss';
-import { cookies } from 'next/headers';
-import type { BotItem } from '@/api/modules/botChat';
-import type { INavigationListItem } from '../../api/modules/admin';
+import { cookies, headers } from 'next/headers';
 
 type Category = { id: number; name: string; remark?: string };
+export const dynamic = 'force-dynamic'; // 避免预渲染阶段执行
+
+export function api(url: string) {
+  const base = process.env.API_BASE_URL!; // 例如 https://api.xxx.com
+  return fetch(new URL(url, base).toString(), { headers: { 'content-type': 'application/json' } });
+}
 
 async function getInitialData(): Promise<{
-  toolList: INavigationListItem[];
-  botList: { cateName: string; cateDesc?: string; list: BotItem[] }[];
+  toolList: any[];
+  botList: { cateName: string; cateDesc?: string; list: any[] }[];
   superAgent: string | undefined;
   categories: Category[];
 }> {
+  const h = await headers();
+  const scheme = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? `${scheme}://${h.get('host')}`;
   const [dictRes, botsRes, toolsRes] = await Promise.all([
-    fetch(`/api/gateway/dict-types`, { next: { revalidate: 300, tags: ['gateway-dict'] } }),
-    fetch(`/api/gateway/bots`, { next: { revalidate: 300, tags: ['gateway-bots'] } }),
-    fetch(`/api/gateway/tools`, { next: { revalidate: 300, tags: ['gateway-tools'] } }),
+    fetch(new URL('/api/gateway/dict-types', base), { next: { revalidate: 300, tags: ['gateway-dict'] } }),
+    fetch(new URL('/api/gateway/bots', base),       { next: { revalidate: 300, tags: ['gateway-bots'] } }),
+    fetch(new URL('/api/gateway/tools', base),      { next: { revalidate: 300, tags: ['gateway-tools'] } }),
   ]);
 
   const dict = dictRes.ok ? await dictRes.json() as { agent_catalog: { id: number; name: string; remark?: string }[]; super_agent: { value: string }[] } : { agent_catalog: [], super_agent: [] };
-  const bots = botsRes.ok ? await botsRes.json() as { records: BotItem[] } : { records: [] };
+  const bots = botsRes.ok ? await botsRes.json() as { records: any[] } : { records: [] };
   const categories: Category[] = dict.agent_catalog.map(v => ({ id: v.id, name: v.name, remark: v.remark }));
   const botList = bots.records.length ? [{ cateName: '智能体广场', cateDesc: '为校园生活量身打造的工具集', list: bots.records }] : [];
-  const toolList: INavigationListItem[] = toolsRes.ok ? await toolsRes.json() : [];
+  const toolList: any[] = toolsRes.ok ? await toolsRes.json() : [];
   const superAgent = dict.super_agent?.[0]?.value as string | undefined;
 
   return { toolList, botList, superAgent, categories };
