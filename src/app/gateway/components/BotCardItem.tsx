@@ -1,10 +1,18 @@
 "use client";
 
 import { Card, Flex, Image, Typography, message } from 'antd';
-import type { BotItem } from '@/api/modules/botChat';
 import { useEffect, useState } from 'react';
 
-type Props = { item: BotItem; isLogin?: boolean; isMobile?: boolean };
+type BotCardData = {
+  botId: string;
+  iconUrl: string;
+  botName: string;
+  description?: string;
+  dataSource?: number;
+  authAccessUrl?: string;
+};
+
+type Props = { item: BotCardData; isLogin?: boolean; isMobile?: boolean };
 
 export default function BotCardItem({ item, isLogin, isMobile }: Props) {
   const [login, setLogin] = useState<boolean>(typeof isLogin === 'boolean' ? isLogin : false);

@@ -1,10 +1,9 @@
 "use client";
 
 import { Card, Flex, Image, Typography, message } from 'antd';
-import type { INavigationListItem } from '@/api/modules/admin';
 import { useEffect, useState } from 'react';
 
-type Props = { item: INavigationListItem; isLogin?: boolean; isMobile?: boolean };
+type Props = { item: any; isLogin?: boolean; isMobile?: boolean };
 
 export default function ToolCardItem({ item, isLogin, isMobile }: Props) {
   const [login, setLogin] = useState<boolean>(typeof isLogin === 'boolean' ? isLogin : false);

@@ -23,23 +23,32 @@ async function getInitialData(): Promise<{
   superAgent: string | undefined;
   categories: Category[];
 }> {
-  const h = await headers();
-  const scheme = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? `${scheme}://${h.get('host')}`;
-  const [dictRes, botsRes, toolsRes] = await Promise.all([
-    fetch(new URL('/api/gateway/dict-types', base), { next: { revalidate: 300, tags: ['gateway-dict'] } }),
-    fetch(new URL('/api/gateway/bots', base),       { next: { revalidate: 300, tags: ['gateway-bots'] } }),
-    fetch(new URL('/api/gateway/tools', base),      { next: { revalidate: 300, tags: ['gateway-tools'] } }),
-  ]);
+  try {
+    const h = await headers();
+    const scheme = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+    const base = process.env.NEXT_PUBLIC_BASE_URL ?? `${scheme}://${h.get('host')}`;
+    const [dictRes, botsRes, toolsRes] = await Promise.all([
+      fetch(new URL('/api/gateway/dict-types', base), { next: { revalidate: 300, tags: ['gateway-dict'] } }),
+      fetch(new URL('/api/gateway/bots', base),       { next: { revalidate: 300, tags: ['gateway-bots'] } }),
+      fetch(new URL('/api/gateway/tools', base),      { next: { revalidate: 300, tags: ['gateway-tools'] } }),
+    ]);
 
-  const dict = dictRes.ok ? await dictRes.json() as { agent_catalog: { id: number; name: string; remark?: string }[]; super_agent: { value: string }[] } : { agent_catalog: [], super_agent: [] };
-  const bots = botsRes.ok ? await botsRes.json() as { records: any[] } : { records: [] };
-  const categories: Category[] = dict.agent_catalog.map(v => ({ id: v.id, name: v.name, remark: v.remark }));
-  const botList = bots.records.length ? [{ cateName: '智能体广场', cateDesc: '为校园生活量身打造的工具集', list: bots.records }] : [];
-  const toolList: any[] = toolsRes.ok ? await toolsRes.json() : [];
-  const superAgent = dict.super_agent?.[0]?.value as string | undefined;
+    const dict = dictRes.ok ? await dictRes.json() as { agent_catalog: { id: number; name: string; remark?: string }[]; super_agent: { value: string }[] } : { agent_catalog: [], super_agent: [] };
+    const bots = botsRes.ok ? await botsRes.json() as { records: any[] } : { records: [] };
+    const categories: Category[] = dict.agent_catalog.map(v => ({ id: v.id, name: v.name, remark: v.remark }));
+    const botList = bots.records.length ? [{ cateName: '智能体广场', cateDesc: '为校园生活量身打造的工具集', list: bots.records }] : [];
+    const toolList: any[] = toolsRes.ok ? await toolsRes.json() : [];
+    const superAgent = dict.super_agent?.[0]?.value as string | undefined;
 
-  return { toolList, botList, superAgent, categories };
+    return { toolList, botList, superAgent, categories };
+  } catch (error) {
+    return {
+      toolList: [],
+      botList: [],
+      superAgent: undefined,
+      categories: [],
+    };
+  }
 }
 
 export default async function GatewayPage() {
