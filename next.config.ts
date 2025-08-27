@@ -6,7 +6,6 @@ const nextConfig: NextConfig = {
     config.plugins = config.plugins || [];
     return config;
   },
-  output: "standalone",
 };
 
 export default nextConfig;
