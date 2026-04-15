@@ -1,103 +1,90 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { apiRequest } from "@/lib/api";
+
+type HealthData = {
+  status: "ok";
+  timestamp: string;
+};
+
+export default function HomePage() {
+  const [health, setHealth] = useState<HealthData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  async function fetchHealth() {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await apiRequest<HealthData>("/api/health");
+      setHealth(data);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "请求失败";
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    void fetchHealth();
+  }, []);
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="min-h-screen bg-slate-50 p-6 md:p-10">
+      <section className="mx-auto flex w-full max-w-3xl flex-col gap-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-semibold tracking-tight">Next.js Clean Template</h1>
+          <p className="text-sm text-slate-600 md:text-base">
+            这是一个已清理的基础模板，默认集成 Next.js App Router、TypeScript、ESLint、Tailwind CSS
+            4 和 shadcn/ui。
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>你可以从这里开始</CardTitle>
+            <CardDescription>先扩展页面，再抽象业务模块。</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <p>1. 在 `app/` 下添加页面与布局</p>
+            <p>2. 在 `components/` 中组织通用组件</p>
+            <p>3. 在 `lib/` 封装业务逻辑与请求层（已提供 `lib/api`）</p>
+            <p>4. 可访问 `/api/health` 验证 API 模块已就绪</p>
+            <div className="rounded-md border border-slate-200 bg-white p-3 text-sm">
+              {loading && <p>健康检查中...</p>}
+              {!loading && error && <p className="text-red-600">请求失败：{error}</p>}
+              {!loading && !error && health && (
+                <div className="space-y-1">
+                  <p>API 状态：{health.status}</p>
+                  <p>返回时间：{new Date(health.timestamp).toLocaleString()}</p>
+                </div>
+              )}
+              <div className="pt-2">
+                <Button size="sm" variant="outline" onClick={() => void fetchHealth()}>
+                  重新请求 /api/health
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3 pt-2">
+              <Button asChild>
+                <Link href="https://nextjs.org/docs" target="_blank">
+                  Next.js Docs
+                </Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="https://ui.shadcn.com/docs" target="_blank">
+                  shadcn/ui Docs
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+    </main>
   );
 }
