@@ -40,7 +40,7 @@ export default function HomePage() {
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold tracking-tight">Next.js Clean Template</h1>
           <p className="text-sm text-slate-600 md:text-base">
-            这是一个已清理的基础模板，默认集成 Next.js App Router、TypeScript、ESLint、Tailwind CSS
+            这是一个已清理的基础模板，默认集成 Next.js App CSS
             4 和 shadcn/ui。
           </p>
         </div>
