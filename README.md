@@ -62,3 +62,8 @@ public/
 
 - 健康检查路由：`GET /api/health`
 - 请求封装入口：`@/lib/api`
+
+## 部署文档
+
+- 自动部署说明：`DEPLOY.md`
+- HTTPS 证书配置：`CERTIFICATE.md`

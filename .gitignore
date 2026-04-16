@@ -11,6 +11,8 @@ build
 # misc
 .DS_Store
 *.log
+.claude
+.agents
 
 # local env files
 .env*
