@@ -15,7 +15,7 @@ inclusion: always
 - `Radix UI`
 - `oxlint` / `oxfmt`
 
-项目内自定义 skills 统一以 `.agent/skills/` 为准，不再维护 `.claude/skills/` 的镜像副本。
+项目内自定义 skills 统一以 `.agent/skills/` 为准。
 
 涉及 React / Next 页面、组件、交互、Hook、路由、API Route 时，统一先遵循 `react-codex` skill 的工作流；本文件只负责说明仓库级规则，不重复展开实现细节。
 

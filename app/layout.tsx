@@ -8,7 +8,7 @@ const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "Neon Matrix",
-  description: "A futuristic product website built with Next.js and shadcn/ui.",
+  description: "A minimal product website framework built with Next.js and shadcn/ui.",
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN" className={cn("font-sans", geist.variable)}>
-      <body className="antialiased selection:bg-cyan-300/30 selection:text-white">{children}</body>
+      <body className="antialiased selection:bg-black/10 selection:text-black">{children}</body>
     </html>
   );
 }
